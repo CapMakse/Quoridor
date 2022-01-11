@@ -11,7 +11,7 @@
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition />
@@ -21,55 +21,63 @@
             <Button Margin="10, 10, 0, 10" Content="New Game" Width="100" ></Button>
             <Button Margin="10, 10, 0, 10" Content="Exit" Width="100" ></Button>
         </StackPanel>
-        
+
         <StackPanel Grid.Row="1" Grid.Column="1">
-            <Button Margin="10, 10, 10, 0" Content="Пох"></Button>
-            <Button Margin="10, 10, 10, 0" Content="Exit"></Button>
+            <Label Margin="10, 10, 10, 0" Content="Ход игрока:"></Label>
+            <Label Margin="10, 10, 10, 0" ></Label>
+            <Label Margin="10, 10, 10, 0" Content="Тип стен" ></Label>
+            <RadioButton x:Name="VerticalWalls" GroupName="WallType" Margin="10, 10, 10, 0" Content="Вертикальные" IsChecked="True" ></RadioButton>
+            <RadioButton GroupName="WallType" Margin="10, 10, 10, 0" Content="Горизонтальные" ></RadioButton>
+
+            <Label Margin="10, 10, 10, 0" Content="Количество стен:"></Label>
+            <Label Margin="10, 10, 10, 0" ></Label>
+
         </StackPanel>
         
-        <Viewbox Margin="10" Grid.Row="1" Grid.Column="0">
-            <Border BorderThickness="1" BorderBrush="Black" Background="Black">
-                <Grid Background="White" Height="1000" Width="1000" >
+            <Viewbox Margin="10" Grid.Row="1" Grid.Column="0">
+            <Border BorderThickness="3" BorderBrush="Black" Background="Black">
+                <Grid x:Name="Board" Background="White" Height="1000" Width="1000" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="9*"/>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="9*" />
                 </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="9*" />
-                </Grid.RowDefinitions>
-            </Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="9*" />
+                    </Grid.RowDefinitions>
+                </Grid>
             </Border>
+            
         </Viewbox>
     </Grid>
 </Window>
