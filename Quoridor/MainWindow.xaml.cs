@@ -81,6 +81,9 @@ namespace Quoridor
                     {
                         if (j % 2 == 0)
                         {
+                            coordinateButton.Click += MoveFigure;
+                            coordinateButton.Row = i / 2;
+                            coordinateButton.Column = j / 2;
                             figureCells[i / 2][j / 2] = coordinateButton;
                         }
                         else
@@ -95,12 +98,44 @@ namespace Quoridor
                             horizontalWalls[(i - 1) / 2][j / 2] = coordinateButton;
                         }
                         else
-                        {
+                        {   
+                            coordinateButton.Click += AddWall;
+                            coordinateButton.Row = (i - 1) / 2;
+                            coordinateButton.Column = (j - 1) / 2;
                             wallCells[(i - 1) / 2][(j - 1) / 2] = coordinateButton;
                         }
                     }
                 }
             }
+        }
+        private void AddWall(object sender, RoutedEventArgs e)
+        {
+            CoordinateButton button = sender as CoordinateButton;
+            UpdateBoardWalls(button.Row, button.Column);
+
+        }
+        private void MoveFigure(object sender, RoutedEventArgs e)
+        {
+
+        }
+        void UpdateBoardWalls(int row, int column)
+        {
+            bool? vertical = (FindName("VerticalWalls") as RadioButton).IsChecked;
+            wallCells[row][column].Background = new SolidColorBrush(Colors.Black);
+            if (vertical == true)
+            {
+                verticalWalls[row][column].Background = new SolidColorBrush(Colors.Black);
+                verticalWalls[row + 1][column].Background = new SolidColorBrush(Colors.Black);
+            }
+            else
+            {
+                horizontalWalls[row][column].Background = new SolidColorBrush(Colors.Black);
+                horizontalWalls[row][column + 1].Background = new SolidColorBrush(Colors.Black);
+            }
+        }
+        void RestartGame()
+        {
+
         }
     }
 }
