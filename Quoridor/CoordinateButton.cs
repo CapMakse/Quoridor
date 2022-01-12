@@ -16,7 +16,6 @@ namespace Quoridor
         {
             this.BorderBrush = new SolidColorBrush(Colors.Black);
             this.BorderThickness = new System.Windows.Thickness(3);
-            this.Background = new SolidColorBrush(Colors.White);
         }
     }
 }

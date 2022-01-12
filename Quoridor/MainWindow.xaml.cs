@@ -19,6 +19,10 @@ namespace Quoridor
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool boardInirializated = false;
+        RadioButton verticalCheck;
+        Label currentPlayerName;
+        Label currentWallCount;
         CoordinateButton[][] figureCells = {
              new CoordinateButton[9],
              new CoordinateButton[9],
@@ -61,13 +65,17 @@ namespace Quoridor
              new CoordinateButton[8],
              new CoordinateButton[8]
             };
+        Game game;
         public MainWindow()
         {
             InitializeComponent();
-            InitBoard();
+            verticalCheck = FindName("VerticalWalls") as RadioButton;
+            currentPlayerName = FindName("PlayerName") as Label;
+            currentWallCount = FindName("CountWalls") as Label;
         }
         void InitBoard()
         {
+            boardInirializated = true;
             Grid Board = FindName("Board") as Grid;
             for (int i = 0; i < 17; i++)
             {
@@ -111,16 +119,15 @@ namespace Quoridor
         private void AddWall(object sender, RoutedEventArgs e)
         {
             CoordinateButton button = sender as CoordinateButton;
-            UpdateBoardWalls(button.Row, button.Column);
-
+            bool vertical = verticalCheck.IsChecked == true;
+            if (game.TryPutWall(button.Row, button.Column, vertical))
+            {
+                UpdateBoardWalls(button.Row, button.Column, vertical);
+                UpdatePlayerInfo();
+            }
         }
-        private void MoveFigure(object sender, RoutedEventArgs e)
+        void UpdateBoardWalls(int row, int column, bool vertical)
         {
-
-        }
-        void UpdateBoardWalls(int row, int column)
-        {
-            bool? vertical = (FindName("VerticalWalls") as RadioButton).IsChecked;
             wallCells[row][column].Background = new SolidColorBrush(Colors.Black);
             if (vertical == true)
             {
@@ -133,9 +140,56 @@ namespace Quoridor
                 horizontalWalls[row][column + 1].Background = new SolidColorBrush(Colors.Black);
             }
         }
-        void RestartGame()
+        private void MoveFigure(object sender, RoutedEventArgs e)
         {
 
+        }
+        void UpdatePlayerInfo()
+        {
+            currentPlayerName.Content = game.currentPlayer.Name;
+            currentWallCount.Content = game.currentPlayer.CountOfWalls;
+        }
+        public void NewGame(string redPlayer, string bluePlayer)
+        {
+            if (!boardInirializated) InitBoard();
+            foreach (var line in figureCells)
+            {
+                foreach (var item in line)
+                {
+                    item.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+            foreach (var line in wallCells)
+            {
+                foreach (var item in line)
+                {
+                    item.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+            foreach (var line in horizontalWalls)
+            {
+                foreach (var item in line)
+                {
+                    item.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+            foreach (var line in verticalWalls)
+            {
+                foreach (var item in line)
+                {
+                    item.Background = new SolidColorBrush(Colors.White);
+                }
+            }
+            figureCells[0][4].Background = new SolidColorBrush(Colors.Red);
+            figureCells[8][4].Background = new SolidColorBrush(Colors.Blue);
+            game = new Game(redPlayer, bluePlayer);
+            UpdatePlayerInfo();
+        }
+        private void NewGame(object sender, RoutedEventArgs e)
+        {
+            NewGameWindow window = new NewGameWindow();
+            window.Owner = this;
+            window.Show();
         }
     }
 }

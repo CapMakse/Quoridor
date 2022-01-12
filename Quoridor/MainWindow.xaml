@@ -18,19 +18,19 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-            <Button Margin="10, 10, 0, 10" Content="New Game" Width="100" ></Button>
+            <Button Margin="10, 10, 0, 10" Content="New Game" Width="100" Click="NewGame" ></Button>
             <Button Margin="10, 10, 0, 10" Content="Exit" Width="100" ></Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1">
             <Label Margin="10, 10, 10, 0" Content="Ход игрока:"></Label>
-            <Label Margin="10, 10, 10, 0" ></Label>
+            <Label x:Name="PlayerName" Margin="10, 10, 10, 0" ></Label>
             <Label Margin="10, 10, 10, 0" Content="Тип стен" ></Label>
             <RadioButton x:Name="VerticalWalls" GroupName="WallType" Margin="10, 10, 10, 0" Content="Вертикальные" IsChecked="True" ></RadioButton>
             <RadioButton GroupName="WallType" Margin="10, 10, 10, 0" Content="Горизонтальные" ></RadioButton>
 
             <Label Margin="10, 10, 10, 0" Content="Количество стен:"></Label>
-            <Label Margin="10, 10, 10, 0" ></Label>
+            <Label x:Name="CountWalls" Margin="10, 10, 10, 0" ></Label>
 
         </StackPanel>
         

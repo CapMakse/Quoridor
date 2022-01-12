@@ -10,7 +10,7 @@ namespace Quoridor
     {
         public int Row { get; set; }
         public int Column { get; set; }
-        public int NumberOfWalls { get; set; } = 9;
+        public int CountOfWalls { get; set; } = 9;
         public string Name { get; set; }
     }
 }
