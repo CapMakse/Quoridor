@@ -73,6 +73,91 @@ namespace Quoridor
             ChangePLayer();
             return true;
         }
+        public bool TryMoveFigure(int row, int column)
+        {
+            if (nextPlayer.Column == column && nextPlayer.Row == row) return false;
+
+            if (!CheckNeightbor(currentPlayer.Row, currentPlayer.Column, row, column))
+            {
+                if(!CheckJump(row, column))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (CheckWall(currentPlayer.Row, currentPlayer.Column, row, column))
+                {
+                    return false;
+                }
+            }
+
+            currentPlayer.Row = row;
+            currentPlayer.Column = column;
+            ChangePLayer();
+            return true;
+        }
+        bool CheckJump(int row, int column)
+        {
+            if (CheckNeightbor(currentPlayer.Row, currentPlayer.Column, nextPlayer.Row, nextPlayer.Column) && CheckNeightbor(row, column, nextPlayer.Row, nextPlayer.Column))
+            {
+                if (CheckWall(currentPlayer.Row, currentPlayer.Column, nextPlayer.Row, nextPlayer.Column) || CheckWall(row, column, nextPlayer.Row, nextPlayer.Column))
+                {
+                    return false;
+                }
+                if (!(currentPlayer.Row == row && nextPlayer.Row == row) && !(currentPlayer.Column == column && nextPlayer.Column == column))
+                {
+                    if (!CheckWallJump())
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+        bool CheckNeightbor(int row, int column, int newRow, int newColumn)
+        {
+            if (Math.Abs(row - newRow) == 1 && column == newColumn) return true;
+            if (Math.Abs(column - newColumn) == 1 && row == newRow) return true;
+            return false;
+        }
+        bool CheckWallJump()
+        {
+            int row = nextPlayer.Row + nextPlayer.Row - currentPlayer.Row;
+            int column = nextPlayer.Column + nextPlayer.Column - currentPlayer.Column;
+            if (row < 0 || row > 8 || column < 0 || column > 8) return true;
+            return CheckWall(nextPlayer.Row, nextPlayer.Column, row, column);
+        }
+        bool CheckWall(int row, int column, int newRow, int newColumn)
+        {
+            if (!CheckNeightbor(row, column, newRow, newColumn)) throw new Exception();
+            if (row == newRow)
+            {
+                column = Math.Min(newColumn, column);
+                if (row != 0)
+                {
+                    if (Board[row - 1][column] == WallType.Vertical) return true;
+                }
+                if (row != 8)
+                {
+                    if (Board[row][column] == WallType.Vertical) return true;
+                }
+            }
+            else if (column == newColumn)
+            {
+                row = Math.Min(newRow, row);
+                if (column != 0)
+                {
+                    if (Board[row][column - 1] == WallType.Horizontal) return true;
+                }
+                if (column != 8)
+                {
+                    if (Board[row][column] == WallType.Horizontal) return true;
+                }
+            }
+            return false;
+        }
         void ChangePLayer()
         {
             Player buffer = currentPlayer;

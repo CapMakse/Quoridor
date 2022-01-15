@@ -19,7 +19,7 @@
 
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
             <Button Margin="10, 10, 0, 10" Content="New Game" Width="100" Click="NewGame" ></Button>
-            <Button Margin="10, 10, 0, 10" Content="Exit" Width="100" ></Button>
+            <Button Margin="10, 10, 0, 10" Content="Exit" Width="100" Click="Exit" ></Button>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Grid.Column="1">

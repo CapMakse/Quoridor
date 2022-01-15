@@ -19,6 +19,8 @@ namespace Quoridor
     /// </summary>
     public partial class MainWindow : Window
     {
+        public bool blueBot { get; set; }
+        public bool redBot { get; set; }
         bool boardInirializated = false;
         RadioButton verticalCheck;
         Label currentPlayerName;
@@ -142,7 +144,15 @@ namespace Quoridor
         }
         private void MoveFigure(object sender, RoutedEventArgs e)
         {
-
+            CoordinateButton button = sender as CoordinateButton;
+            int row = game.currentPlayer.Row;
+            int column = game.currentPlayer.Column;
+            if (game.TryMoveFigure(button.Row, button.Column))
+            {
+                button.Background = figureCells[row][column].Background;
+                figureCells[row][column].Background = new SolidColorBrush(Colors.White); ;
+                UpdatePlayerInfo();
+            }
         }
         void UpdatePlayerInfo()
         {
@@ -190,6 +200,10 @@ namespace Quoridor
             NewGameWindow window = new NewGameWindow();
             window.Owner = this;
             window.Show();
+        }
+        private void Exit(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
