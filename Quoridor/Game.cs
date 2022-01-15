@@ -8,6 +8,7 @@ namespace Quoridor
 {
     class Game
     {
+        bool gameEnd = false;
         public Player currentPlayer { get; private set; }
         public Player nextPlayer { get;  private set; }
 
@@ -26,17 +27,18 @@ namespace Quoridor
             Random rnd = new Random();
             if (rnd.Next() % 2 == 0)
             {
-                currentPlayer = new Player() { Row = 0, Column = 4, Name = redPlayer };
-                nextPlayer = new Player() { Row = 8, Column = 4, Name = bluePlayer };
+                currentPlayer = new Player() { Row = 0, Column = 4, Name = redPlayer, Type = PlayerType.red };
+                nextPlayer = new Player() { Row = 8, Column = 4, Name = bluePlayer, Type = PlayerType.blue };
             }
             else
             {
-                nextPlayer = new Player() { Row = 0, Column = 4, Name = redPlayer };
-                currentPlayer = new Player() { Row = 8, Column = 4, Name = bluePlayer };
+                nextPlayer = new Player() { Row = 0, Column = 4, Name = redPlayer, Type = PlayerType.red };
+                currentPlayer = new Player() { Row = 8, Column = 4, Name = bluePlayer, Type = PlayerType.blue };
             }
         }
         public bool TryPutWall(int row, int column, bool vertical)
         {
+            if (gameEnd) return false;
             if (Board[row][column] != WallType.Empty || currentPlayer.CountOfWalls == 0) return false;
             if (vertical)
             {
@@ -68,13 +70,37 @@ namespace Quoridor
             {
                 Board[row][column] = WallType.Horizontal;
             }
-            //A*
+            if (!CheckPathToFinish())
+            {
+                Board[row][column] = WallType.Empty;
+                return false;
+            }
             currentPlayer.CountOfWalls--;
             ChangePLayer();
             return true;
         }
+        bool CheckPathToFinish()
+        {
+            SearchPathAlgoritm algoritm = new SearchPathAlgoritm(this);
+            if (currentPlayer.Type == PlayerType.red)
+            {
+                if  (algoritm.CheckPathToRow(8, currentPlayer.Row, currentPlayer.Column) && algoritm.CheckPathToRow(0, nextPlayer.Row, nextPlayer.Column))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                if (algoritm.CheckPathToRow(0, currentPlayer.Row, currentPlayer.Column) && algoritm.CheckPathToRow(8, nextPlayer.Row, nextPlayer.Column))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public bool TryMoveFigure(int row, int column)
         {
+            if (gameEnd) return false;
             if (nextPlayer.Column == column && nextPlayer.Row == row) return false;
 
             if (!CheckNeightbor(currentPlayer.Row, currentPlayer.Column, row, column))
@@ -94,6 +120,22 @@ namespace Quoridor
 
             currentPlayer.Row = row;
             currentPlayer.Column = column;
+            if (currentPlayer.Type == PlayerType.red)
+            {
+                if (row == 8)
+                {
+                    gameEnd = true;
+                    return true;
+                }
+            }
+            else
+            {
+                if (row == 0)
+                {
+                    gameEnd = true;
+                    return true;
+                }
+            }
             ChangePLayer();
             return true;
         }
@@ -129,7 +171,7 @@ namespace Quoridor
             if (row < 0 || row > 8 || column < 0 || column > 8) return true;
             return CheckWall(nextPlayer.Row, nextPlayer.Column, row, column);
         }
-        bool CheckWall(int row, int column, int newRow, int newColumn)
+        public bool CheckWall(int row, int column, int newRow, int newColumn)
         {
             if (!CheckNeightbor(row, column, newRow, newColumn)) throw new Exception();
             if (row == newRow)

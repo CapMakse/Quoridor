@@ -27,8 +27,8 @@ namespace Quoridor
         private void StartNewGame(object sender, RoutedEventArgs e)
         {
             string BotName = "QuoridorBot v1"; 
-            bool blueBot = (FindName("BluePlayer") as RadioButton).IsChecked == true;
-            bool redBot = (FindName("RedPlayer") as RadioButton).IsChecked == true;
+            bool blueBot = (FindName("BluePlayer") as RadioButton).IsChecked == false;
+            bool redBot = (FindName("RedPlayer") as RadioButton).IsChecked == false;
             string blueName = blueBot ? BotName : (FindName("BluePlayerName") as TextBox).Text;
             string redName = redBot ? BotName : (FindName("RedPlayerName") as TextBox).Text;
             (Owner as MainWindow).redBot = redBot; 
