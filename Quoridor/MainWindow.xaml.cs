@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Quoridor
 {
@@ -19,6 +20,9 @@ namespace Quoridor
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        RandomBot bot;
+        DispatcherTimer gameLoop = new DispatcherTimer();
         public bool blueBot { get; set; }
         public bool redBot { get; set; }
         bool boardInirializated = false;
@@ -74,7 +78,28 @@ namespace Quoridor
             verticalCheck = FindName("VerticalWalls") as RadioButton;
             currentPlayerName = FindName("PlayerName") as Label;
             currentWallCount = FindName("CountWalls") as Label;
+
+            gameLoop.Tick += BotRequest;
+            gameLoop.Interval = TimeSpan.FromMilliseconds(100);
         }
+
+        private void BotRequest(object sender, EventArgs e)
+        {
+            if (game.gameEnd) return;
+            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red))
+            {
+                IMove move = bot.GetMove();
+                if (move.GetType() == typeof(FigureMove))
+                {
+                    MoveFigure(move.Row, move.Column);
+                }
+                else
+                {
+                    AddWall(move.Row, move.Column, (move as WallMove).Vertical);
+                }
+            }
+        }
+
         void InitBoard()
         {
             boardInirializated = true;
@@ -120,11 +145,16 @@ namespace Quoridor
         }
         private void AddWall(object sender, RoutedEventArgs e)
         {
+            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red)) return;
             CoordinateButton button = sender as CoordinateButton;
             bool vertical = verticalCheck.IsChecked == true;
-            if (game.TryPutWall(button.Row, button.Column, vertical))
+            AddWall(button.Row, button.Column, vertical);
+        }
+        void AddWall(int row, int column, bool vertical)
+        {
+            if (game.TryPutWall(row, column, vertical))
             {
-                UpdateBoardWalls(button.Row, button.Column, vertical);
+                UpdateBoardWalls(row, column, vertical);
                 UpdatePlayerInfo();
             }
         }
@@ -144,15 +174,22 @@ namespace Quoridor
         }
         private void MoveFigure(object sender, RoutedEventArgs e)
         {
+            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red)) return;
             CoordinateButton button = sender as CoordinateButton;
+            MoveFigure(button.Row, button.Column);
+        }
+        void MoveFigure(int newRow, int newColumn)
+        {
             int row = game.currentPlayer.Row;
             int column = game.currentPlayer.Column;
-            if (game.TryMoveFigure(button.Row, button.Column))
+
+            if (game.TryMoveFigure(newRow, newColumn))
             {
-                button.Background = figureCells[row][column].Background;
+                figureCells[newRow][newColumn].Background = figureCells[row][column].Background;
                 figureCells[row][column].Background = new SolidColorBrush(Colors.White); ;
                 UpdatePlayerInfo();
             }
+            if (game.gameEnd) MessageBox.Show("Победил игрок " + game.currentPlayer.Name);
         }
         void UpdatePlayerInfo()
         {
@@ -193,6 +230,8 @@ namespace Quoridor
             figureCells[0][4].Background = new SolidColorBrush(Colors.Red);
             figureCells[8][4].Background = new SolidColorBrush(Colors.Blue);
             game = new Game(redPlayer, bluePlayer);
+            bot = new RandomBot(game);
+            gameLoop.Start();
             UpdatePlayerInfo();
         }
         private void NewGame(object sender, RoutedEventArgs e)

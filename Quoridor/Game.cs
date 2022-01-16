@@ -8,7 +8,7 @@ namespace Quoridor
 {
     class Game
     {
-        bool gameEnd = false;
+        public bool gameEnd = false;
         public Player currentPlayer { get; private set; }
         public Player nextPlayer { get;  private set; }
 
@@ -39,6 +39,22 @@ namespace Quoridor
         public bool TryPutWall(int row, int column, bool vertical)
         {
             if (gameEnd) return false;
+            if (!CheckLegalWall(row, column, vertical)) return false;
+
+            if (vertical)
+            {
+                Board[row][column] = WallType.Vertical;
+            }
+            else
+            {
+                Board[row][column] = WallType.Horizontal;
+            }
+            currentPlayer.CountOfWalls--;
+            ChangePLayer();
+            return true;
+        }
+        public bool CheckLegalWall(int row, int column, bool vertical)
+        {
             if (Board[row][column] != WallType.Empty || currentPlayer.CountOfWalls == 0) return false;
             if (vertical)
             {
@@ -75,8 +91,7 @@ namespace Quoridor
                 Board[row][column] = WallType.Empty;
                 return false;
             }
-            currentPlayer.CountOfWalls--;
-            ChangePLayer();
+            Board[row][column] = WallType.Empty;
             return true;
         }
         bool CheckPathToFinish()
@@ -101,22 +116,8 @@ namespace Quoridor
         public bool TryMoveFigure(int row, int column)
         {
             if (gameEnd) return false;
-            if (nextPlayer.Column == column && nextPlayer.Row == row) return false;
 
-            if (!CheckNeightbor(currentPlayer.Row, currentPlayer.Column, row, column))
-            {
-                if(!CheckJump(row, column))
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (CheckWall(currentPlayer.Row, currentPlayer.Column, row, column))
-                {
-                    return false;
-                }
-            }
+            if (!CheckLegalFigureMove(row, column)) return false;
 
             currentPlayer.Row = row;
             currentPlayer.Column = column;
@@ -139,6 +140,27 @@ namespace Quoridor
             ChangePLayer();
             return true;
         }
+        public bool CheckLegalFigureMove(int row, int column)
+        {
+            if (row < 0 || row > 8 || column < 0 || column > 8) return false;
+            if (nextPlayer.Column == column && nextPlayer.Row == row) return false;
+
+            if (!CheckNeightbor(currentPlayer.Row, currentPlayer.Column, row, column))
+            {
+                if (!CheckJump(row, column))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (CheckWall(currentPlayer.Row, currentPlayer.Column, row, column))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         bool CheckJump(int row, int column)
         {
             if (CheckNeightbor(currentPlayer.Row, currentPlayer.Column, nextPlayer.Row, nextPlayer.Column) && CheckNeightbor(row, column, nextPlayer.Row, nextPlayer.Column))
@@ -158,7 +180,7 @@ namespace Quoridor
             }
             return false;
         }
-        bool CheckNeightbor(int row, int column, int newRow, int newColumn)
+        public bool CheckNeightbor(int row, int column, int newRow, int newColumn)
         {
             if (Math.Abs(row - newRow) == 1 && column == newColumn) return true;
             if (Math.Abs(column - newColumn) == 1 && row == newRow) return true;
