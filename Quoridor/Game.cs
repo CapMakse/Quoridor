@@ -144,6 +144,7 @@ namespace Quoridor
         {
             if (row < 0 || row > 8 || column < 0 || column > 8) return false;
             if (nextPlayer.Column == column && nextPlayer.Row == row) return false;
+            if (currentPlayer.Column == column && currentPlayer.Row == row) return false;
 
             if (!CheckNeightbor(currentPlayer.Row, currentPlayer.Column, row, column))
             {

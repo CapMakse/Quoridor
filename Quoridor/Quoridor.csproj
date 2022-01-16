@@ -59,6 +59,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GameInput.cs" />
     <Compile Include="RandomBot.cs" />
     <Compile Include="SearchPathAlgoritm.cs" />
     <Page Include="MainWindow.xaml">

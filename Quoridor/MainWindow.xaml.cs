@@ -71,7 +71,7 @@ namespace Quoridor
              new CoordinateButton[8],
              new CoordinateButton[8]
             };
-        Game game;
+        GameInput gameInput;
         public MainWindow()
         {
             InitializeComponent();
@@ -85,8 +85,8 @@ namespace Quoridor
 
         private void BotRequest(object sender, EventArgs e)
         {
-            if (game.gameEnd) return;
-            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red))
+            if (gameInput.GameEnd()) return;
+            if ((blueBot && gameInput.GetCurrentPlayer().Type == PlayerType.blue) || (redBot && gameInput.GetCurrentPlayer().Type == PlayerType.red))
             {
                 IMove move = bot.GetMove();
                 if (move.GetType() == typeof(FigureMove))
@@ -145,14 +145,14 @@ namespace Quoridor
         }
         private void AddWall(object sender, RoutedEventArgs e)
         {
-            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red)) return;
+            if ((blueBot && gameInput.GetCurrentPlayer().Type == PlayerType.blue) || (redBot && gameInput.GetCurrentPlayer().Type == PlayerType.red)) return;
             CoordinateButton button = sender as CoordinateButton;
             bool vertical = verticalCheck.IsChecked == true;
             AddWall(button.Row, button.Column, vertical);
         }
         void AddWall(int row, int column, bool vertical)
         {
-            if (game.TryPutWall(row, column, vertical))
+            if (gameInput.TryPutWall(row, column, vertical))
             {
                 UpdateBoardWalls(row, column, vertical);
                 UpdatePlayerInfo();
@@ -174,27 +174,27 @@ namespace Quoridor
         }
         private void MoveFigure(object sender, RoutedEventArgs e)
         {
-            if ((blueBot && game.currentPlayer.Type == PlayerType.blue) || (redBot && game.currentPlayer.Type == PlayerType.red)) return;
+            if ((blueBot && gameInput.GetCurrentPlayer().Type == PlayerType.blue) || (redBot && gameInput.GetCurrentPlayer().Type == PlayerType.red)) return;
             CoordinateButton button = sender as CoordinateButton;
             MoveFigure(button.Row, button.Column);
         }
-        void MoveFigure(int newRow, int newColumn)
+        public void MoveFigure(int newRow, int newColumn)
         {
-            int row = game.currentPlayer.Row;
-            int column = game.currentPlayer.Column;
+            int row = gameInput.GetCurrentPlayer().Row;
+            int column = gameInput.GetCurrentPlayer().Column;
 
-            if (game.TryMoveFigure(newRow, newColumn))
+            if (gameInput.TryMoveFigure(newRow, newColumn))
             {
                 figureCells[newRow][newColumn].Background = figureCells[row][column].Background;
                 figureCells[row][column].Background = new SolidColorBrush(Colors.White); ;
                 UpdatePlayerInfo();
             }
-            if (game.gameEnd) MessageBox.Show("Победил игрок " + game.currentPlayer.Name);
+            if (gameInput.GameEnd()) MessageBox.Show("Победил игрок " + gameInput.GetCurrentPlayer().Name);
         }
         void UpdatePlayerInfo()
         {
-            currentPlayerName.Content = game.currentPlayer.Name;
-            currentWallCount.Content = game.currentPlayer.CountOfWalls;
+            currentPlayerName.Content = gameInput.GetCurrentPlayer().Name;
+            currentWallCount.Content = gameInput.GetCurrentPlayer().CountOfWalls;
         }
         public void NewGame(string redPlayer, string bluePlayer)
         {
@@ -229,8 +229,9 @@ namespace Quoridor
             }
             figureCells[0][4].Background = new SolidColorBrush(Colors.Red);
             figureCells[8][4].Background = new SolidColorBrush(Colors.Blue);
-            game = new Game(redPlayer, bluePlayer);
+            Game game = new Game(redPlayer, bluePlayer);
             bot = new RandomBot(game);
+            gameInput = new GameInput(game);
             gameLoop.Start();
             UpdatePlayerInfo();
         }
