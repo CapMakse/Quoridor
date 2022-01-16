@@ -21,7 +21,7 @@ namespace Quoridor
     public partial class MainWindow : Window
     {
 
-        RandomBot bot;
+        IBot bot;
         DispatcherTimer gameLoop = new DispatcherTimer();
         public bool blueBot { get; set; }
         public bool redBot { get; set; }

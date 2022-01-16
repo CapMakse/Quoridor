@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Quoridor
 {
-    class RandomBot
+    interface IBot
+    {
+        IMove GetMove();
+    }
+    class RandomBot : IBot
     {
         Game game;
         public RandomBot(Game game)
